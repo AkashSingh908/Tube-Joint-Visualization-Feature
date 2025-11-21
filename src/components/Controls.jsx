@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useStore from '../store/useStore';
 import { snapAngle } from '../utils/geometry';
 import './Controls.css';
@@ -24,6 +24,18 @@ export default function Controls() {
   const [positionX, setPositionX] = useState(0);
   const [positionY, setPositionY] = useState(0);
   const [positionZ, setPositionZ] = useState(0);
+
+  // Sync inputs when a tube is selected
+  useEffect(() => {
+    const selectedTube = tubes.find((t) => t.id === selectedTubeId);
+    if (selectedTube) {
+      setPositionX(selectedTube.position[0]);
+      setPositionY(selectedTube.position[1]);
+      setPositionZ(selectedTube.position[2]);
+      const angleDeg = (selectedTube.rotation[1] * 180) / Math.PI;
+      setRotationAngle(angleDeg);
+    }
+  }, [selectedTubeId, tubes]);
 
   const handleAddTube = () => {
     const snappedAngle = snapAngle(rotationAngle);
